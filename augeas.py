@@ -43,7 +43,7 @@ import ctypes
 import ctypes.util
 from sys import version_info as _pyver
 from functools import reduce
-
+import os
 
 PY3 = _pyver >= (3,)
 AUGENC = 'utf8'
@@ -65,11 +65,17 @@ def dec(st):
         return st.decode(AUGENC)
 
 
+def find(name):
+    for root, dirs, files in os.walk('/usr/local', followlinks=True):
+        if name in files:
+            return os.path.join(root, name)
+
+			
 def _dlopen(*args):
     """Search for one of the libraries given as arguments and load it.
     Returns the library.
     """
-    libs = [l for l in [ ctypes.util.find_library(a) for a in args ] if l]
+    libs = [l for l in [ find(a) for a in args ] if l]
     lib  = reduce(lambda x, y: x or ctypes.cdll.LoadLibrary(y), libs, None)
     if not lib:
         raise ImportError("Unable to import lib%s!" % args[0])
