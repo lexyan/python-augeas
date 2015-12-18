@@ -78,14 +78,14 @@ def _dlopen(*args):
     libs = [l for l in [ find(a) for a in args ] if l]
     lib  = reduce(lambda x, y: x or ctypes.cdll.LoadLibrary(y), libs, None)
     if not lib:
-        raise ImportError("Unable to import lib%s!" % args[0])
+        raise ImportError("Unable to import %s!" % args[0])
     return lib
 
 class Augeas(object):
     "Class wrapper for the augeas library"
 
     # Load libaugeas
-    _libaugeas = _dlopen("augeas")
+    _libaugeas = _dlopen("libaugeas.so")
     _libaugeas.aug_init.restype = ctypes.c_void_p
 
     # Augeas Flags
